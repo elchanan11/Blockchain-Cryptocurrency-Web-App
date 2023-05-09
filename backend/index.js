@@ -179,9 +179,9 @@ process.env.PORT = PORT;
 
 io.on('connection', (socket) => {
 
-    socket.on('transaction-mined', (msg) => {
-        console.log('transaction-mined from socket')
-        io.emit('transaction-mined', 'transaction happend inform server')
+    socket.on('transaction-pool', (msg) => {
+        console.log('transaction-mined or added from socket')
+        io.emit('transaction-pool', 'transaction mined or added - inform server')
     });
 });
 

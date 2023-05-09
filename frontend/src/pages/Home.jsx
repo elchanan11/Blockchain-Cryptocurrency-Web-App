@@ -3,26 +3,19 @@ import {useEffect, useState} from "react";
 import {publicRequest} from "../requestMethods";
 import logo from '../assets/img.png'
 import {Link} from "react-router-dom";
-import ConductTransaction from "./ConductTransaction";
+import {useDispatch, useSelector} from "react-redux";
+import {wallet} from "../redux/apiCalls";
 
 const Home = () => {
 
-    const [walletInfo ,setWalletInfo] = useState({ address: '', balance: 0 })
+    const dispatch = useDispatch()
 
-    useEffect(() => {
-        const walletData = async () => {
-            try {
-                const res = await publicRequest.get("/wallet/info")
-
-                setWalletInfo({ address: res.data.address, balance: res.data.balance })
-            }catch (e) {
-                console.log(e)
-            }
-        }
-
-        walletData()
-    },[])
-
+    const { currentWallet } = useSelector((state) => state.wallet)
+    console.log(currentWallet)
+    if (!currentWallet) {
+        wallet(dispatch)
+        console.log(currentWallet)
+    }
 
     return(
         <div className={'App'}>
@@ -38,10 +31,10 @@ const Home = () => {
             <br/>
             <div className={'WalletInfo'}>
                 <div>
-                    Address: { walletInfo.address }
+                    Address: { currentWallet?.address }
                 </div>
                 <div>
-                    Balance: { walletInfo.balance }
+                    Balance: { currentWallet?.balance }
                 </div>
             </div>
         </div>
