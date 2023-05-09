@@ -178,10 +178,10 @@ if (process.env.GENERATE_PEER_PORT === 'true') {
 process.env.PORT = PORT;
 
 io.on('connection', (socket) => {
-    console.log('a user connected');
 
     socket.on('transaction-mined', (msg) => {
-        console.log('message: ' + msg);
+        console.log('transaction-mined from socket')
+        io.emit('transaction-mined', 'transaction happend inform server')
     });
 });
 
