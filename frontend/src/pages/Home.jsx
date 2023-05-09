@@ -11,11 +11,12 @@ const Home = () => {
     const dispatch = useDispatch()
 
     const { currentWallet } = useSelector((state) => state.wallet)
-    console.log(currentWallet)
-    if (!currentWallet) {
-        wallet(dispatch)
-        console.log(currentWallet)
-    }
+
+    useEffect(() => {
+        if (!currentWallet) {
+            wallet(dispatch);
+        }
+    }, [currentWallet, dispatch]);
 
     return(
         <div className={'App'}>

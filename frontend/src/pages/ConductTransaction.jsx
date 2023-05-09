@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {Link, useHistory} from "react-router-dom";
+import {Link} from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import {Button, FormControl, FormGroup} from "react-bootstrap";
 import {publicRequest} from "../requestMethods";
@@ -7,17 +7,14 @@ import {socket} from "../socket";
 
 const ConductTransaction = () => {
     const navigate = useNavigate();
-    const [transaction, setTransaction] = useState({recipient:'', amount:'', knownAddresses: []})
+    const [transaction, setTransaction] = useState({recipient:'', amount:''})
+    const [knownAddresses, setKnownAddresses] = useState([])
 
     useEffect(() => {
         const getAddresses = async () => {
             try {
                 const res = await publicRequest.get('/known-addresses')
-                setTransaction({
-                    knownAddresses: res.data,
-                    recipient: transaction.recipient,
-                    amount: transaction.amount
-                })
+                setKnownAddresses(res.data)
             }catch (e) {
                 console.log(e)
             }
@@ -62,19 +59,6 @@ const ConductTransaction = () => {
             <Link to={'/'}>Home</Link>
             <h3>Conduct a Transaction</h3>
             <br/>
-            <h4>Known Addresses</h4>
-            {
-                transaction.knownAddresses &&
-                transaction.knownAddresses.map(address => {
-                    return(
-                        <div key={address}>
-                            <div>{address}</div>
-                            <br/>
-                        </div>
-                    )
-                })
-            }
-            <br/>
             <FormGroup>
                 <FormControl
                     input={'text'}
@@ -100,6 +84,19 @@ const ConductTransaction = () => {
                     Submit
                 </Button>
             </div>
+            <hr/>
+            <h4>Known Addresses</h4>
+            {
+                knownAddresses &&
+                knownAddresses.map(address => {
+                    return(
+                        <div key={address}>
+                            <div>{address}</div>
+                            <br/>
+                        </div>
+                    )
+                })
+            }
         </div>
     )
 }

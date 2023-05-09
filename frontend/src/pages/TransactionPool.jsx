@@ -1,9 +1,8 @@
 import {useEffect, useState} from "react";
-import {BASE_URL, publicRequest} from "../requestMethods";
+import { publicRequest} from "../requestMethods";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import Transaction from "../components/Transaction";
 import {Button} from "react-bootstrap";
-import io from 'socket.io-client';
 import {socket} from "../socket";
 
 const TransactionPool = () => {
@@ -14,7 +13,6 @@ const TransactionPool = () => {
   const [transactionPoolMap, setTransactionPoolMap] = useState({})
 
   const getTransactionPoolMap = async () => {
-      console.log(transactionPoolMap)
     try {
       const res = await publicRequest.get('/transaction-pool-map')
       setTransactionPoolMap(res.data)
