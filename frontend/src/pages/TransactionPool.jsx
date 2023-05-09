@@ -4,8 +4,13 @@ import {Link, useLocation, useNavigate} from "react-router-dom";
 import Transaction from "../components/Transaction";
 import {Button} from "react-bootstrap";
 import {socket} from "../socket";
+import {resetAddresses} from "../redux/knownAddressesRedux";
+import {useDispatch, useSelector} from "react-redux";
 
 const TransactionPool = () => {
+
+    const { knownAddresses } = useSelector((state) => state.knownAddresses)
+  const dispatch = useDispatch()
 
   const location = useLocation()
 
@@ -46,6 +51,9 @@ const TransactionPool = () => {
               const res = await publicRequest.get('/mine-transactions')
               if (res.status === 200) {
                   socket.emit('transaction-pool');
+                  console.log(knownAddresses)
+                  dispatch(resetAddresses())
+                  console.log(knownAddresses)
                   alert('success')
                   navigate('/blocks')
               }

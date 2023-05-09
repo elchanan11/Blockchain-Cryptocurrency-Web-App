@@ -4,24 +4,34 @@ import { useNavigate } from 'react-router-dom';
 import {Button, FormControl, FormGroup} from "react-bootstrap";
 import {publicRequest} from "../requestMethods";
 import {socket} from "../socket";
+import {useDispatch, useSelector} from "react-redux";
+import {getKnownAddresses} from "../redux/apiCalls";
 
 const ConductTransaction = () => {
+
+    const dispatch = useDispatch()
+    const { knownAddresses } = useSelector((state) => state.knownAddresses)
+
+    console.log(knownAddresses)
     const navigate = useNavigate();
     const [transaction, setTransaction] = useState({recipient:'', amount:''})
-    const [knownAddresses, setKnownAddresses] = useState([])
+    const [filteredAddresses, setFilteredAddresses] = useState([]);
 
     useEffect(() => {
-        const getAddresses = async () => {
-            try {
-                const res = await publicRequest.get('/known-addresses')
-                setKnownAddresses(res.data)
-            }catch (e) {
-                console.log(e)
-            }
+        if (!knownAddresses) {
+            getKnownAddresses(dispatch);
+        } else {
+            setFilteredAddresses(knownAddresses)
         }
+    }, [knownAddresses,dispatch])
 
-        getAddresses()
-    }, [])
+    useEffect(() => {
+        if (transaction.recipient && knownAddresses) {
+            setFilteredAddresses(
+                knownAddresses.filter(address => address.includes(transaction.recipient) )
+            )
+        }
+    }, [transaction.recipient])
 
     const updateFormAmount = (e) => {
         setTransaction({
@@ -87,8 +97,8 @@ const ConductTransaction = () => {
             <hr/>
             <h4>Known Addresses</h4>
             {
-                knownAddresses &&
-                knownAddresses.map(address => {
+                filteredAddresses &&
+                filteredAddresses.map(address => {
                     return(
                         <div key={address}>
                             <div>{address}</div>
