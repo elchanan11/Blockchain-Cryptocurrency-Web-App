@@ -14,6 +14,7 @@ const TransactionPool = () => {
   const [transactionPoolMap, setTransactionPoolMap] = useState({})
 
   const getTransactionPoolMap = async () => {
+      console.log(transactionPoolMap)
     try {
       const res = await publicRequest.get('/transaction-pool-map')
       setTransactionPoolMap(res.data)
@@ -29,28 +30,35 @@ const TransactionPool = () => {
 
   useEffect(() => {
       socket.emit('join-room', location.pathname)
-      socket.on('transaction-mined',getTransactionPoolMap);
+      socket.on('transaction-pool',getTransactionPoolMap);
 
       return () => {
-        socket.off('transaction-mined',getTransactionPoolMap);
+        socket.off('transaction-pool',getTransactionPoolMap);
         socket.emit('leave-room', location.pathname);
       }
   },
       [location.pathname])
 
 
+    console.log()
+
   const fetchMineTransaction = async () => {
-    try {
-      const res = await publicRequest.get('/mine-transactions')
-      if (res.status === 200) {
-        socket.emit('transaction-mined');
-        alert('success')
-        navigate('/blocks')
+      if (Object.keys(transactionPoolMap).length > 0) {
+          try {
+              const res = await publicRequest.get('/mine-transactions')
+              if (res.status === 200) {
+                  socket.emit('transaction-pool');
+                  alert('success')
+                  navigate('/blocks')
+              }
+          }catch (e) {
+              console.log(e)
+              alert('The mine Transaction block request did not complete')
+          }
+      } else {
+          alert('There Is No Transaction In The Pool')
       }
-    }catch (e) {
-      console.log(e)
-      alert('The mine Transaction block request did not complete')
-    }
+
   }
 
   return(
@@ -72,7 +80,7 @@ const TransactionPool = () => {
                 variant="danger"
                 onClick={fetchMineTransaction}
         >
-          Mine the transaction
+          Mine The Transaction
         </Button>
 
       </div>

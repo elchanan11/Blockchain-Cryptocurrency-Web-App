@@ -3,6 +3,7 @@ import {Link, useHistory} from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import {Button, FormControl, FormGroup} from "react-bootstrap";
 import {publicRequest} from "../requestMethods";
+import {socket} from "../socket";
 
 const ConductTransaction = () => {
     const navigate = useNavigate();
@@ -44,6 +45,7 @@ const ConductTransaction = () => {
 
         try {
             const res = await publicRequest.post('/transact',{ recipient: recipient, amount: amount })
+            socket.emit('transaction-pool');
             alert(res.data.type )
         }catch (e) {
             alert(e.message )
