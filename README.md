@@ -23,9 +23,6 @@ The blockchain was implemented using object-oriented programming principles. It 
 
 The frontend of the application was built using React.js. Users can view the blockchain and make transactions.
 
-## Deployment
-
-The application is deployed to production using multiple servers to ensure reliability and availability.
 
 ## API
 
